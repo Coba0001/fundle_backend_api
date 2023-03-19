@@ -1,9 +1,4 @@
-version: '1.0'
 services:
-  db:
-    image: postgres
-    env:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Z3clJTldg3zJHQcuxzzp
-      POSTGRES_DB: railway
-      EXTENSIONS: "uuid-ossp"
+  postgres:
+    extensions:
+      - "uuid-ossp"
