@@ -16,6 +16,7 @@ type UserController interface {
 	GetAllUser(ctx *gin.Context)
 	MeUser(ctx *gin.Context)
 	LoginUser(ctx *gin.Context)
+	LogoutUser(ctx *gin.Context)
 	UpdateUser(ctx *gin.Context)
 	DeleteUser(ctx *gin.Context)
 }
@@ -110,6 +111,28 @@ func (uc *userController) LoginUser(ctx *gin.Context) {
 
 	response := utils.BuildResponseSuccess("Berhasil Login", userResponse)
 	ctx.JSON(http.StatusOK, response)
+}
+
+func (uc *userController) LogoutUser(ctx *gin.Context) {
+	token := ctx.GetHeader("Authorization")
+	if token == "" {
+		res := utils.BuildResponseFailed("Gagal Logout", "Token Kosong", utils.EmptyObj{})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+
+	err := uc.jwtService.InvalidateToken(token)
+	if err != nil {
+		res := utils.BuildResponseFailed("Gagal Logout", err.Error(), utils.EmptyObj{})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+	
+	ctx.Header("Set-Cookie", "token=; Path=/; Max-Age=-1")
+	ctx.Header("Expires", "Thu, 01 Jan 1970 00:00:00 GMT")
+
+	res := utils.BuildResponseSuccess("Berhasil Logout", utils.EmptyObj{})
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (uc *userController) UpdateUser(ctx *gin.Context) {
