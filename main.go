@@ -5,6 +5,7 @@ import (
 
 	"github.com/Caknoooo/golang-clean_template/config"
 	"github.com/Caknoooo/golang-clean_template/controller"
+	"github.com/Caknoooo/golang-clean_template/middleware"
 	"github.com/Caknoooo/golang-clean_template/repository"
 	"github.com/Caknoooo/golang-clean_template/routes"
 	"github.com/Caknoooo/golang-clean_template/services"
@@ -23,7 +24,10 @@ func main() {
 	)
 
 	server := gin.Default()
+
 	routes.Router(server, userController, jwtService)
+	
+	server.Use(middleware.CORSMiddleware())
 
 	port := os.Getenv("PORT")
 	if port == "" {
