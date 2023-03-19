@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/Caknoooo/golang-clean_template/dto"
 	"github.com/Caknoooo/golang-clean_template/entities"
@@ -104,6 +105,7 @@ func (uc *userController) LoginUser(ctx *gin.Context) {
 	userResponse := entities.Authorization{
 		Token: token,
 		Role:  user.Role,
+		ExpiresAt: time.Now().Add(24 * time.Hour),
 	}
 
 	response := utils.BuildResponseSuccess("Berhasil Login", userResponse)

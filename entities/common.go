@@ -13,4 +13,5 @@ type Timestamp struct {
 type Authorization struct {
 	Token string `gorm:"type:varchar(255)" json:"token"`
 	Role  string `gorm:"type:varchar(30)" json:"role"`
+	ExpiresAt time.Time `gorm:"column:expires_at" json:"expiresAt"`
 }
