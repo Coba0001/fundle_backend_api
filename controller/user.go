@@ -109,6 +109,8 @@ func (uc *userController) LoginUser(ctx *gin.Context) {
 		ExpiresAt: time.Now().Add(24 * time.Hour),
 	}
 
+	ctx.SetCookie("token", token, 60*60*24, "/", "localhost", false, true)
+  ctx.String(http.StatusOK, "Token saved")
 	response := utils.BuildResponseSuccess("Berhasil Login", userResponse)
 	ctx.JSON(http.StatusOK, response)
 }
