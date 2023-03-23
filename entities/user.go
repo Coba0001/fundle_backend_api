@@ -14,6 +14,8 @@ type User struct{
 	Password string    `gorm:"type:varchar(100)" json:"password"`
 	Role     string    `gorm:"type:varchar(100)" json:"role"`
 
+	Events    []Event    `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"event,omitempty"`
+
 	Timestamp
 }
 
@@ -22,6 +24,13 @@ func (u *User) BeforeCreate(tx *gorm.DB) error{
 	u.Password, err = helpers.HashPassword(u.Password)
 	if err != nil {
 		return err	
+	}
+	return nil
+}
+
+func (u *User) CheckNil(tx *gorm.DB) error{
+	if u.Events == nil {
+		u.Events = []Event{}
 	}
 	return nil
 }
