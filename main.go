@@ -39,8 +39,8 @@ func main() {
 	)
 
 	server := gin.Default()
-	routes.Router(server, userController, eventController, transaksiController, seederController, penarikanController, jwtService)
 	server.Use(middleware.CORSMiddleware())
+	routes.Router(server, userController, eventController, transaksiController, seederController, penarikanController, jwtService)
 
 	if err := config.Seeder(db); err != nil {
 		log.Fatalf("error seeding database: %v", err)
