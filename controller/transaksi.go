@@ -36,9 +36,7 @@ func (tc *transaksiController) CreateTransaksi(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
-
 	transaksi, err := tc.transaksiService.CreateTransaksi(ctx.Request.Context(), transaksiDTO)
-
 	if err != nil {
 		res := utils.BuildResponseFailed("Gagal Menambahkan Transaksi", "Failed", utils.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, res)

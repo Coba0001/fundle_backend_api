@@ -15,7 +15,7 @@ type HistoryPenarikan struct {
 	BankID  uint      `gorm:"type:uint" json:"bank_id"`
 	Bank    ListBank  `gorm:"foreignKey:BankID" json:"-"`
 	UserID  uuid.UUID `gorm:"type:uuid" json:"user_id"`
-	User    User      `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"-"`
+	User    User      `gorm:"foreignKey:UserID" json:"-"`
 	EventID uuid.UUID `gorm:"type:uuid" json:"event_id"`
 	Event   Event     `gorm:"foreignKey:EventID" json:"-"`
 }

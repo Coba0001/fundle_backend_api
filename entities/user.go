@@ -15,6 +15,7 @@ type User struct {
 	ConfirmPassword string    `gorm:"type:varchar(100)" json:"confirm_password"`
 	Role            string    `gorm:"type:varchar(100)" json:"role"`
 
+	HistoryPenarikan []HistoryPenarikan `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"history_penarikans,omitempty"`
 	Transaksi        []Transaksi        `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"transaksis,omitempty"`
 	Events           []Event            `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"events,omitempty"`
 	Likes            []Like             `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"likes,omitempty"`
@@ -25,7 +26,6 @@ type User struct {
 func (u *User) BeforeCreate(tx *gorm.DB) error {
 	var err error
 	u.Password, err = helpers.HashPassword(u.Password)
-	u.ConfirmPassword = u.Password
 	if err != nil {
 		return err
 	}
