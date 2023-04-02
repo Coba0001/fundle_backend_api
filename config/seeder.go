@@ -27,7 +27,7 @@ func ListBankSeeder(db *gorm.DB) error {
 	var listBanks = []entities.ListBank{
 		{
 			ID:   1,
-			Nama: "BNI",
+			Nama: "BRI",
 		},
 		{
 			ID:   2,
