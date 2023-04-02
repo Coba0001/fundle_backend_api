@@ -26,6 +26,7 @@ func Router(route *gin.Engine, UserController controller.UserController, EventCo
 		eventRoutes.POST("", middleware.Authenticate(jwtService), EventController.CreateEvent)
 		eventRoutes.GET("", EventController.GetAllEvent)
 		eventRoutes.GET("/get3event", EventController.Get3Event)
+		eventRoutes.POST("/post3event", EventController.Post3Event)
 		eventRoutes.GET("/user/:user_id", middleware.Authenticate(jwtService), EventController.GetAllEventByUserID)
 		eventRoutes.GET("/get/:id", EventController.GetEventByID)
 		eventRoutes.PUT("/:id", middleware.Authenticate(jwtService), EventController.UpdateEvent)

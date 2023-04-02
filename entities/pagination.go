@@ -1,6 +1,5 @@
 package entities
 
 type Pagination struct {
-	Limit uint `json:"limit"`
-	Page  uint `json:"page"`
+	PageNumber  uint `json:"page_number"`
 }

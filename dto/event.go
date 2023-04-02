@@ -80,3 +80,7 @@ type EventResponseMyEventDTO struct {
 	DeskripsiEvent string `json:"deskripsi_event" form:"deskripsi_event"`
 	FotoEvent      string `json:"foto_event" form:"foto_event"`
 }
+
+type EventPaginationResponse struct {
+	PageNumber uint `json:"page_number" form:"page_number"`
+}
