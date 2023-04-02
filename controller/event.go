@@ -24,6 +24,7 @@ type EventController interface {
 	UpdateEvent(ctx *gin.Context)
 	DeleteEvent(ctx *gin.Context)
 	GetAllEventLastTransaksi(ctx *gin.Context)
+	Post3Event(ctx *gin.Context)
 	Get3Event(ctx *gin.Context)
 }
 
@@ -41,7 +42,7 @@ func NewEventController(es services.EventService, ts services.TransaksiService, 
 		eventService:     es,
 		transaksiService: ts,
 		db:               db,
-		page:             1,
+		page:             0,
 	}
 }
 
@@ -60,7 +61,6 @@ func (ec *eventController) CreateEvent(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
-
 
 	timeLeft := TimeLeft(eventDTO.ExpiredDonasi)
 	eventDTO.SisaHariDonasi = &timeLeft
@@ -81,14 +81,14 @@ func TimeLeft(expiredTime time.Time) string {
 	timeLeft := expiredTime.Sub(time.Now())
 
 	fmt.Print(timeLeft.Hours() / 24)
-	if timeLeft.Hours() / 24 <= 0 {
+	if timeLeft.Hours()/24 <= 0 {
 		return "Waktu Habis"
 	}
 
-	if timeLeft.Hours() / 24 < 1 {
+	if timeLeft.Hours()/24 < 1 {
 		return "<1"
 	}
-	
+
 	dayLeft := int(math.Round(timeLeft.Hours() / 24))
 	return fmt.Sprintf("%v", dayLeft)
 }
@@ -238,10 +238,22 @@ func (ec *eventController) GetAllEventLastTransaksi(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (ec *eventController) Get3Event(ctx *gin.Context) {
-	limit := ec.page * 3
+func (ec *eventController) Post3Event(ctx *gin.Context) {
+	var PageNumber dto.EventPaginationResponse
+	if err := ctx.ShouldBind(&PageNumber); err != nil {
+		res := utils.BuildResponseFailed("Gagal Mendapatkan Request Dari Body", err.Error(), utils.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
 
-	events, err := ec.eventService.Get3Event(ctx, limit)
+	ec.page = PageNumber.PageNumber
+	res := utils.BuildResponseSuccess("Berhasil Menambahkan 3 List Event", utils.EmptyObj{})
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (ec *eventController) Get3Event(ctx *gin.Context) {
+	fmt.Print(ec.page)
+	events, err := ec.eventService.Get3Event(ctx, ec.page * 3)
 	if err != nil {
 		res := utils.BuildResponseFailed("Gagal Mendapatkan List Event", err.Error(), utils.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, res)
