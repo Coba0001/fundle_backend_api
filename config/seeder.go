@@ -123,39 +123,15 @@ func CreateCategoryEvent(db *gorm.DB) error {
 	var CategoryEvent = []entities.CategoryEvent{
 		{
 			ID: 1,
-			Nama: "Difabel",
+			Nama: "Kegiatan sosial",
 		},
 		{
 			ID: 2,
-			Nama: "Infrastruktur Umum",
+			Nama: "Kesehatan",
 		},
 		{
 			ID: 3,
-			Nama: "Karya Kreatif & Modal Usaha",
-		},
-		{
-			ID: 4,
-			Nama: "Kegiatan Sosial",
-		},
-		{
-			ID: 5,
-			Nama: "Kemanusiaan",
-		},
-		{
-			ID: 6,
-			Nama: "Lingkungan",
-		},
-		{
-			ID: 7,
-			Nama: "Menolong Hewan",
-		},
-		{
-			ID: 8, 
-			Nama: "Panti Asuhan",
-		},
-		{
-			ID: 9,
-			Nama: "Rumah Ibadah",
+			Nama: "Pendidikan",
 		},
 	}
 
