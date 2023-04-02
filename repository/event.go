@@ -133,7 +133,7 @@ func (er *eventRepository) PatchEvent(ctx context.Context, event entities.Event,
 	}
 
 	// Tambahkan IsDone dan update lagi
-	updatedEvent.TotalBerhasil++
+	updatedEvent.IsDone++
 	if err := er.connection.Save(&updatedEvent).Error; err != nil {
 		return err
 	}
