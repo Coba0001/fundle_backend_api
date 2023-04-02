@@ -26,6 +26,7 @@ type User struct {
 func (u *User) BeforeCreate(tx *gorm.DB) error {
 	var err error
 	u.Password, err = helpers.HashPassword(u.Password)
+	u.ConfirmPassword = u.Password
 	if err != nil {
 		return err
 	}
