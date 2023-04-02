@@ -123,7 +123,7 @@ func CreateCategoryEvent(db *gorm.DB) error {
 	var CategoryEvent = []entities.CategoryEvent{
 		{
 			ID: 1,
-			Nama: "Kegiatan sosial",
+			Nama: "Kegiatan Sosial",
 		},
 		{
 			ID: 2,
