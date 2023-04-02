@@ -61,11 +61,25 @@ func (ec *eventController) CreateEvent(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
+	// Create the event
+	eventDTO.JenisEvent = category.Nama
+	fmt.Println(eventDTO.ExpiredDonasi)
+	
+	// Time zone
+	expiredDonasiStr  := eventDTO.ExpiredDonasi.Format(time.RFC3339)
+	expiredDonasiLocal, err := time.ParseInLocation(time.RFC3339, expiredDonasiStr, time.Local)
+	if err != nil {
+		res := utils.BuildResponseFailed("Gagal Memparse Waktu", err.Error(), utils.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	eventDTO.ExpiredDonasi = expiredDonasiLocal
+	fmt.Println(eventDTO.ExpiredDonasi)
 
 	timeLeft := TimeLeft(eventDTO.ExpiredDonasi)
 	eventDTO.SisaHariDonasi = &timeLeft
-	// Create the event
-	eventDTO.JenisEvent = category.Nama
+
 	event, err := ec.eventService.CreateEvent(ctx, eventDTO)
 	if err != nil {
 		res := utils.BuildResponseFailed("Gagal Menambahkan Event", err.Error(), utils.EmptyObj{})
@@ -86,11 +100,11 @@ func TimeLeft(expiredTime time.Time) string {
 	}
 
 	if timeLeft.Hours()/24 < 1 {
-		return "<1"
+		return "<1 Hari"
 	}
 
 	dayLeft := int(math.Round(timeLeft.Hours() / 24))
-	return fmt.Sprintf("%v", dayLeft)
+	return fmt.Sprintf("%v Hari", dayLeft)
 }
 
 func (ec *eventController) GetAllEvent(ctx *gin.Context) {

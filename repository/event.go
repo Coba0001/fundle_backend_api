@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"time"
+	"math"
 
 	"github.com/Caknoooo/golang-clean_template/entities"
 	"github.com/google/uuid"
@@ -59,11 +60,58 @@ func (er *eventRepository) GetAllEventByUserID(ctx context.Context, userID uuid.
 }
 
 func (er *eventRepository) GetEventByID(ctx context.Context, eventID uuid.UUID) (entities.Event, error) {
+	var updateEvent entities.Event
+	if err := er.connection.First(&updateEvent, eventID).Error; err != nil {
+		return entities.Event{}, err
+	}
+
+	if !updateEvent.ExpiredDonasi.IsZero() && updateEvent.ExpiredDonasi.Before(time.Now()) {
+		updateEvent.Is_expired = true
+		if err := er.connection.Save(&updateEvent).Error; err != nil {
+			return entities.Event{}, err
+		}
+	}
+
+	timeLeft := TimeLeft(updateEvent.ExpiredDonasi)
+	updateEvent.SisaHariDonasi = timeLeft
+	
+	if updateEvent.JumlahDonasi >= updateEvent.MaxDonasi {
+		updateEvent.Is_target_full = true
+	}
+
+	fmt.Println(updateEvent.ExpiredDonasi)
+
+	expiredDonasiStr  := updateEvent.ExpiredDonasi.Format(time.RFC3339)
+	expiredDonasiLocal, _ := time.ParseInLocation(time.RFC3339, expiredDonasiStr, time.Local)
+
+	updateEvent.ExpiredDonasi = expiredDonasiLocal
+
+	if err := er.connection.Save(&updateEvent).Error; err != nil {
+		return entities.Event{}, err
+	}
+
 	var event entities.Event
 	if err := er.connection.Preload("User").Preload("Likes").Where("id = ?", eventID).Take(&event).Error; err != nil {
 		return entities.Event{}, err
 	}
+	fmt.Println(event.ExpiredDonasi)
 	return event, nil
+}
+
+func TimeLeft(expiredTime time.Time) string {
+	timeLeft := expiredTime.Sub(time.Now())
+
+	fmt.Print(timeLeft.Hours() / 24)
+	if timeLeft.Hours()/24 <= 0 {
+		return "Waktu Habis"
+	}
+
+	if timeLeft.Hours()/24 < 1 {
+		return "<1 Hari"
+	}
+
+	dayLeft := int(math.Round(timeLeft.Hours() / 24))
+	return fmt.Sprintf("%v Hari", dayLeft)
 }
 
 func (er *eventRepository) LikeEventByEventID(ctx context.Context, userID uuid.UUID, eventID uuid.UUID) error {
