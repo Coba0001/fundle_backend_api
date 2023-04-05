@@ -43,7 +43,7 @@ func NewEventController(es services.EventService, ts services.TransaksiService, 
 		eventService:     es,
 		transaksiService: ts,
 		db:               db,
-		page:             0,
+		page:             1,
 	}
 }
 
